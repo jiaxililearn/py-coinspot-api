@@ -72,20 +72,19 @@ class CoinSpot:
             self._api_key = os.environ["COINSPOT_API_KEY"]
             self._api_secret = os.environ["COINSPOT_SECRET_KEY"]
             # ok got enough to run
+            print('Found key/secret')
             return
         except:
+            print('cannot get key/secret from ENV')
             pass
 
         """
         Step 2  Second we look for the localest yaml file - closest to executing code
         """
         try:
-            config = yaml.load(
-                open(
-                    os.path.realpath(os.path.dirname(sys.argv[0])) + "/config.yml", "r"
-                ),
-                Loader=yaml.SafeLoader,
-            )
+            with open("/Users/jiaxili/.coinspot/config.yml", "r") as fin:
+                config = yaml.load(fin, Loader=yaml.SafeLoader)
+
             # these must be set
             self._api_key = config["api"]["key"]
             self._api_secret = config["api"]["secret"]
@@ -96,10 +95,8 @@ class CoinSpot:
             # ok we are good to run
             print(self)
             return
-        except IOError as error:
-            pass
-        except:
-            pass
+        except Exception as e:
+            raise Exception(e)
 
         """
         Step 3 Carry on - we dont care if there is no config file - we might be testing
@@ -114,7 +111,7 @@ class CoinSpot:
         )
 
     def _get_signed_request(self, data):
-        print(self)
+        # print(self)
         # print(hmac.new(key.encode('utf-8'), data.encode('utf-8'), hashlib.sha512).hexdigest()
         return hmac.new(
             str((self._api_secret)).encode("utf-8"),

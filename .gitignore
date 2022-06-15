@@ -42,3 +42,5 @@ nosetests.xml
 *.log
 coinspot/*.yml
 bin/config.yml
+
+.vscode
